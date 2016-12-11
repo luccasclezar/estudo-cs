@@ -14,6 +14,10 @@ namespace EstudoIII
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
 
+            Console.OutputEncoding = Encoding.Unicode;
+
+            Console.Title = "Estudo do Terceiro Trimestre";
+
             Loop.MainLoop();
         }
     }
@@ -288,7 +292,7 @@ namespace EstudoIII
                     switch (randType)
                     {
                         case 1:
-                            question = "C - C - C -= N";
+                            question = "C - C - C ≡ N";
                             break;
                         case 2:
                             question = "nitrogenio com ligacao tripla no final da cadeia";
@@ -814,7 +818,7 @@ namespace EstudoIII
                         switch (randExercise)
                         {
                             case 1:
-                                question = "C -= C";
+                                question = "C ≡ C";
                                 break;
                             case 2:
                                 question = "C - C\n|\nC";
@@ -996,13 +1000,13 @@ namespace EstudoIII
                     switch (randExercise)
                     {
                         case 1:
-                            question = "C - C - C -= N";
+                            question = "C - C - C ≡ N";
                             break;
                         case 2:
-                            question = "C - C - C - C -= N";
+                            question = "C - C - C - C ≡ N";
                             break;
                         case 3:
-                            question = "C - C -= N";
+                            question = "C - C ≡ N";
                             break;
                     }
                     break;
@@ -1342,7 +1346,7 @@ namespace EstudoIII
                     Console.WriteLine("Errou... A resposta certa é \"" + answer + "\"\n\n");
             }
 
-        WorkflowLabel:
+            WorkflowLabel:
             Workflow();
         }
 
@@ -1376,6 +1380,9 @@ namespace EstudoIII
             Console.WriteLine("Escreva:\n\t1 - Questões Teóricas\n\t2 - Questões Práticas\n\t3 - Ambas");
             QuestionType questionType = (QuestionType)(Convert.ToInt32(Console.ReadLine()) - 1);
 
+            if (questionType == QuestionType.Both || questionType == QuestionType.Exercise)
+                Console.WriteLine("Se dois compostos não forem isomeros, abrevie com NSI.\n");
+
             Workflow(questionType);
         }
 
@@ -1383,16 +1390,16 @@ namespace EstudoIII
         {
             Random rd = new Random();
 
-            int questionNumber = rd.Next(1, 8);
-
             QuestionType? unambiguousType = null;
             if (questionType == QuestionType.Both)
-                unambiguousType = (QuestionType)rd.Next(1, 3);
+                unambiguousType = (QuestionType)rd.Next(0, 2);
+
+            var questionNumber = ((unambiguousType.HasValue && unambiguousType == QuestionType.Theory) || questionType == QuestionType.Theory) ? rd.Next(0, 8) : rd.Next(0, 18);
 
             SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
             var answer = SetAnswer(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
 
-        InputLabel:
+            InputLabel:
             var input = Console.ReadLine();
 
             if (input.ToLower().Contains("ótica"))
@@ -1407,7 +1414,7 @@ namespace EstudoIII
             bool rightAnswer = false;
 
             List<string> possibleAnswers = null;
-            if(answer.Contains('/'))
+            if (answer.Contains('/'))
             {
                 possibleAnswers = new List<string>(answer.Split('/'));
                 foreach (string s in possibleAnswers)
@@ -1474,64 +1481,80 @@ namespace EstudoIII
                 switch (questionNumber)
                 {
                     case 0:
-                        question = "";
+                        question = "C - C - OH    e    C - O - C";
                         break;
                     case 1:
-                        question = "";
+                        question = "C - C - C = O    e    C - C - C = O\n­­­­­" +
+                                   "                        |\n" + 
+                                   "                        C";
                         break;
                     case 2:
-                        question = "";
+                        question = "C - C - C = O    e    C - C - C\n" +
+                                   "        |                 ‖\n" +
+                                   "        OH                O";
                         break;
                     case 3:
-                        question = "";
+                        question = "C - C - C = O    e    C - C - C - C = O";
                         break;
                     case 4:
-                        question = "";
+                        question = "C - C - C    e    C - C - C\n" +
+                                   "|                     |\n" +
+                                   "OH                    OH";
                         break;
                     case 5:
-                        question = "";
+                        question = "C = C - C    e      C\n" +
+                                   "                   / \\\n" +
+                                   "                  C - C";
                         break;
                     case 6:
-                        question = "";
+                        question = "C - N - C - C - C    e    C - C - N - C - C";
                         break;
                     case 7:
-                        question = "";
+                        question = "C - C = O        e    C = O\n" +
+                                   "    |                 |\n" +
+                                   "    O - C - C         O - C - C - C";
                         break;
                     case 8:
-                        question = "";
+                        question = "C - C - C = O    e    C - C = O\n" +
+                                   "        |                 |\n" +
+                                   "        OH                O - C - C";
                         break;
                     case 9:
-                        question = "";
+                        question = "C ≡ C - C - C    e    C - C ≡ C - C";
                         break;
                     case 10:
-                        question = "";
+                        question = "C - C - C - C - C    e    C - C - C - C - C\n" +
+                                   "    |                             ‖\n" +
+                                   "    OH                            O";
                         break;
                     case 11:
-                        question = "";
+                        question = "C - N - C - C    e    C - C - C - N";
                         break;
                     case 12:
-                        question = "";
+                        question = "C - C = O    e    C - C - OH";
                         break;
                     case 13:
-                        question = "";
+                        question = "C - C - C    e    C = C - C\n" +
+                                   "    ‖                 |\n" +
+                                   "    O                 OH";
                         break;
                     case 14:
-                        question = "";
+                        question = "C - C - C - C = O    e    C - C - C = O\n" +
+                                   "            |                 |   |\n" +
+                                   "            OH                C   OH";
                         break;
                     case 15:
-                        question = "";
+                        question = "C - C - C    e    C - C - C = O\n" +
+                                   "    ‖\n" +
+                                   "    O";
                         break;
                     case 16:
-                        question = "";
+                        question = "C - C - O - C - C    e    C - C - C - C = O";
                         break;
                     case 17:
-                        question = "";
-                        break;
-                    case 18:
-                        question = "";
-                        break;
-                    case 19:
-                        question = "";
+                        question = "C = O        e    C - C = O\n" +
+                                   "|                     |\n" +
+                                   "O - C - C             O - C - C";
                         break;
                 }
 
@@ -1565,6 +1588,64 @@ namespace EstudoIII
                         break;
                     case 6:
                         answer = "Isomeria Óptica/Óptica";
+                        break;
+                }
+            else
+                switch (questionNumber)
+                {
+                    case 0:
+                        answer = "Função";
+                        break;
+                    case 1:
+                        answer = "NSI";
+                        break;
+                    case 2:
+                        answer = "NSI";
+                        break;
+                    case 3:
+                        answer = "Cadeia";
+                        break;
+                    case 4:
+                        answer = "Posição";
+                        break;
+                    case 5:
+                        answer = "Cadeia";
+                        break;
+                    case 6:
+                        answer = "Posição";
+                        break;
+                    case 7:
+                        answer = "Metameria";
+                        break;
+                    case 8:
+                        answer = "Função";
+                        break;
+                    case 9:
+                        answer = "Posição";
+                        break;
+                    case 10:
+                        answer = "NSI";
+                        break;
+                    case 11:
+                        answer = "Cadeia";
+                        break;
+                    case 12:
+                        answer = "Tautomeria";
+                        break;
+                    case 13:
+                        answer = "Tautomeria";
+                        break;
+                    case 14:
+                        answer = "Cadeia";
+                        break;
+                    case 15:
+                        answer = "Função";
+                        break;
+                    case 16:
+                        answer = "NSI";
+                        break;
+                    case 17:
+                        answer = "Metameria";
                         break;
                 }
 
