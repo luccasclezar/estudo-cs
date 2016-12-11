@@ -16,6 +16,8 @@ namespace EstudoIII
 
             Console.OutputEncoding = Encoding.Unicode;
 
+            Console.WindowWidth = 140;
+
             Console.Title = "Estudo do Terceiro Trimestre";
 
             Loop.MainLoop();
@@ -1209,7 +1211,7 @@ namespace EstudoIII
                     answer = "Reação de Adição/Adição";
                     break;
                 case 1:
-                    answer = "Hidrogênação";
+                    answer = "Hidrogenação";
                     break;
                 case 2:
                     answer = "Halogenação";
@@ -1372,16 +1374,11 @@ namespace EstudoIII
     {
         internal ChemistryIsomery()
         {
-            Init();
-        }
-
-        void Init()
-        {
             Console.WriteLine("Escreva:\n\t1 - Questões Teóricas\n\t2 - Questões Práticas\n\t3 - Ambas");
             QuestionType questionType = (QuestionType)(Convert.ToInt32(Console.ReadLine()) - 1);
 
             if (questionType == QuestionType.Both || questionType == QuestionType.Exercise)
-                Console.WriteLine("Se dois compostos não forem isomeros, abrevie com NSI.\n");
+                Console.WriteLine("\nSe dois compostos não forem isomeros, abrevie com NSI.\n");
 
             Workflow(questionType);
         }
@@ -1394,7 +1391,7 @@ namespace EstudoIII
             if (questionType == QuestionType.Both)
                 unambiguousType = (QuestionType)rd.Next(0, 2);
 
-            var questionNumber = ((unambiguousType.HasValue && unambiguousType == QuestionType.Theory) || questionType == QuestionType.Theory) ? rd.Next(0, 8) : rd.Next(0, 18);
+            var questionNumber = ((unambiguousType.HasValue && unambiguousType == QuestionType.Theory) || questionType == QuestionType.Theory) ? rd.Next(0, 10) : rd.Next(0, 18);
 
             SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
             var answer = SetAnswer(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
@@ -1456,25 +1453,34 @@ namespace EstudoIII
                 switch (questionNumber)
                 {
                     case 0:
-                        question = "Os compostos pertencem a mesma função nas apresetam cadeias diferentes";
+                        question = "Isomeria em que os compostos pertencem a mesma função nas apresetam cadeias diferentes";
                         break;
                     case 1:
-                        question = "Os compostos pertencem a mesma função e a mesma cadeia mas se diferenciam pela posição de um radical";
+                        question = "Isomeria em que os compostos pertencem a mesma função e a mesma cadeia mas se diferenciam pela posição de um radical";
                         break;
                     case 2:
-                        question = "Os compostos apresentam a mesma função e a mesma cadeia mas há deslocamento de um heteroátomo";
+                        question = "Isomeria em que os compostos apresentam a mesma função e a mesma cadeia mas há deslocamento de um heteroátomo";
                         break;
                     case 3:
-                        question = "Os compostos diferem pela função orgânica";
+                        question = "Isomeria em que os compostos diferem pela função orgânica";
                         break;
                     case 4:
                         question = "Caso particular de isomeria de função onde os compostos coexistem. Pode ocorrer entre aldeído e enol ou entre cetona e enol";
                         break;
                     case 5:
-                        question = "Ocorre em compostos de cadeia insaturada (somente dupla) e que apresente ligantes diferentes nos carbonos da dupla ligação";
+                        question = "Isomeria que ocorre em compostos de cadeia insaturada (somente dupla) e que apresente ligantes diferentes nos carbonos da dupla ligação";
                         break;
                     case 6:
-                        question = "Ocorre quando o composto apresenta carbono assimétrico";
+                        question = "Isomeria que ocorre quando o composto apresenta carbono assimétrico";
+                        break;
+                    case 7:
+                        question = "Uma molécula é \"cis\" quando os átomos de maior número atômico ficam em lados ______. (iguas/diferentes)";
+                        break;
+                    case 8:
+                        question = "Uma molécula é \"trans\" quando os átomos de maior número atômico ficam em lados ______. (iguais/diferentes)";
+                        break;
+                    case 9:
+                        question = "Um carobno é assimétrico quando ele tem quatro radicais ______. (iguais/diferentes)";
                         break;
                 }
             else
@@ -1556,6 +1562,113 @@ namespace EstudoIII
                                    "|                     |\n" +
                                    "O - C - C             O - C - C";
                         break;
+                    case 18:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "H3C - C = C - CH3\n" +
+                                   "      |   |\n" +
+                                   "      Br  H";
+                        break;
+                    case 19:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "    H2\n" +
+                                   "    C   CH3\n" +
+                                   "   / \\\n" +
+                                   "H2C - C - CH3\n" +
+                                   "      |\n" +
+                                   "      H";
+                        break;
+                    case 20:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "         H\n" +
+                                   "         |" +
+                                   "   H2C - C - CH3\n" +
+                                   "     |   |\n" +
+                                   "Br - C - C\n" +
+                                   "     |\n" +
+                                   "     H";
+                        break;
+                    case 21:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "H2C = C - CH2 - CH3\n" +
+                                   "      |\n" +
+                                   "      CH3";
+                        break;
+                    case 22:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "H3C - CH2 - C = C - Cl\n" +
+                                   "            |   |\n" +
+                                   "            CH3 CH3";
+                        break;
+                    case 23:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "H3C - C = C - CH2 - CH3\n" +
+                                   "      |   |\n" +
+                                   "      H   H";
+                        break;
+                    case 24:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "   H2\n" +
+                                   "   C\n" +
+                                   "  / \\n" +
+                                   "HC - CH\n" +
+                                   " |   |\n" +
+                                   " CH3 CH3";
+                        break;
+                    case 25:
+                        question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
+                                   "H3C - C = C - CH3\n" +
+                                   "      |   |\n" +
+                                   "      CH3 H";
+                        break;
+                    case 26:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "H3C - CH2 - CH2 - CH2 - Cl";
+                        break;
+                    case 27:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "H3C - CH2 - CH - CH3\n" +
+                                   "            |\n" +
+                                   "            Cl";
+                        break;
+                    case 28:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "H3C - CH2 - CH - CH2 - CH3\n" +
+                                   "            |\n" +
+                                   "            Cl";
+                        break;
+                    case 29:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "      H" +
+                                   "      |" +
+                                   "H3C - C - CH2 - CH3\n" +
+                                   "      |\n" +
+                                   "      CH3";
+                        break;
+                    case 30:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "            H" +
+                                   "            |" +
+                                   "H3C - CH3 - C - CH2 - CH3\n" +
+                                   "            |\n" +
+                                   "            CH3";
+                        break;
+                    case 31:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "      H\n" +
+                                   "      |\n" +
+                                   "H3C - C - CH2 - C = O\n" +
+                                   "      |         |\n" +
+                                   "      OH        OH";
+                        break;
+                    case 32:
+                        question = "O seguinte composto apresenta Isomeria Óptica?\n" +
+                                   "  OH\n" +
+                                   "  |\n" +
+                                   "H3C - C - CH2 - C = O\n" +
+                                   "                |\n" +
+                                   "                OH";
+                        break;
+
                 }
 
             Console.WriteLine(question);
@@ -1588,6 +1701,15 @@ namespace EstudoIII
                         break;
                     case 6:
                         answer = "Isomeria Óptica/Óptica";
+                        break;
+                    case 7:
+                        answer = "Iguais";
+                        break;
+                    case 8:
+                        answer = "Diferentes";
+                        break;
+                    case 9:
+                        answer = "Diferentes";
                         break;
                 }
             else
@@ -1646,6 +1768,51 @@ namespace EstudoIII
                         break;
                     case 17:
                         answer = "Metameria";
+                        break;
+                    case 18:
+                        answer = "Sim/S";
+                        break;
+                    case 19:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 20:
+                        answer = "Sim/S";
+                        break;
+                    case 21:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 22:
+                        answer = "Sim/S";
+                        break;
+                    case 23:
+                        answer = "Sim/S";
+                        break;
+                    case 24:
+                        answer = "Sim/S";
+                        break;
+                    case 25:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 26:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 27:
+                        answer = "Sim/S";
+                        break;
+                    case 28:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 29:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 30:
+                        answer = "Não/N/Nao";
+                        break;
+                    case 31:
+                        answer = "Sim/S";
+                        break;
+                    case 32:
+                        answer = "Não/N/Nao";
                         break;
                 }
 
