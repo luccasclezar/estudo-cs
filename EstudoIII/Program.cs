@@ -48,6 +48,7 @@ namespace EstudoIII
                     new ChemistryReactions();
                     break;
                 case "q-isomeria":
+                    new ChemistryIsomery();
                     break;
                 default:
                     break;
@@ -1096,7 +1097,7 @@ namespace EstudoIII
                     question = "Tipo de reação em que ocorre quebra de ligações pi entre carbonos e resulta em um único produto.";
                     break;
                 case 1:
-                    question = "Reação que ocorre com a asição de um hidrogênio a uma molécula.";
+                    question = "Reação que ocorre com a adição de um hidrogênio a uma molécula.";
                     break;
                 case 2:
                     question = "Reação que ocorre com a adição de halogênios (F2, Cl2, Br2, I2) em um alceno ou alcadieno.";
@@ -1341,14 +1342,14 @@ namespace EstudoIII
                     Console.WriteLine("Errou... A resposta certa é \"" + answer + "\"\n\n");
             }
 
-            WorkflowLabel:
+        WorkflowLabel:
             Workflow();
         }
 
         void Init()
         {
             Console.WriteLine("Acentos e espaços são válidos, todas as respostas estão no singular e correspondem ao polígrafo de reações.\n\n");
-            
+
             /*
             @"                                          ";
             @"                               NO2        ";
@@ -1360,6 +1361,221 @@ namespace EstudoIII
             */
 
             Workflow();
+        }
+    }
+
+    internal class ChemistryIsomery
+    {
+        internal ChemistryIsomery()
+        {
+            Init();
+        }
+
+        void Init()
+        {
+            Console.WriteLine("Escreva:\n\t1 - Questões Teóricas\n\t2 - Questões Práticas\n\t3 - Ambas");
+            QuestionType questionType = (QuestionType)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+            Workflow(questionType);
+        }
+
+        void Workflow(QuestionType questionType)
+        {
+            Random rd = new Random();
+
+            int questionNumber = rd.Next(1, 8);
+
+            QuestionType? unambiguousType = null;
+            if (questionType == QuestionType.Both)
+                unambiguousType = (QuestionType)rd.Next(1, 3);
+
+            SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+            var answer = SetAnswer(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+
+        InputLabel:
+            var input = Console.ReadLine();
+
+            if (input.ToLower().Contains("ótica"))
+            {
+                Console.WriteLine("Você quis dizer óptica? ;)");
+                goto InputLabel;
+            }
+
+            if (input == "voltar")
+                Loop.MainLoop();
+
+            bool rightAnswer = false;
+
+            List<string> possibleAnswers = null;
+            if(answer.Contains('/'))
+            {
+                possibleAnswers = new List<string>(answer.Split('/'));
+                foreach (string s in possibleAnswers)
+                {
+                    if (input.ToLower() == s.ToLower())
+                    {
+                        rightAnswer = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (input.ToLower() == answer.ToLower())
+                    rightAnswer = true;
+            }
+
+            if (rightAnswer)
+                Console.WriteLine("Acertou!");
+            else
+                Console.WriteLine("Errou... A resposta certa é " + answer);
+
+            Console.WriteLine("\n");
+
+            Workflow(questionType);
+        }
+
+        void SetQuestion(int questionNumber, QuestionType questionType)
+        {
+            string question = "";
+
+            if (questionType == QuestionType.Both)
+            {
+                Console.WriteLine("Oops... Bug");
+                Loop.MainLoop();
+            }
+
+            if (questionType == QuestionType.Theory)
+                switch (questionNumber)
+                {
+                    case 0:
+                        question = "Os compostos pertencem a mesma função nas apresetam cadeias diferentes";
+                        break;
+                    case 1:
+                        question = "Os compostos pertencem a mesma função e a mesma cadeia mas se diferenciam pela posição de um radical";
+                        break;
+                    case 2:
+                        question = "Os compostos apresentam a mesma função e a mesma cadeia mas há deslocamento de um heteroátomo";
+                        break;
+                    case 3:
+                        question = "Os compostos diferem pela função orgânica";
+                        break;
+                    case 4:
+                        question = "Caso particular de isomeria de função onde os compostos coexistem. Pode ocorrer entre aldeído e enol ou entre cetona e enol";
+                        break;
+                    case 5:
+                        question = "Ocorre em compostos de cadeia insaturada (somente dupla) e que apresente ligantes diferentes nos carbonos da dupla ligação";
+                        break;
+                    case 6:
+                        question = "Ocorre quando o composto apresenta carbono assimétrico";
+                        break;
+                }
+            else
+                switch (questionNumber)
+                {
+                    case 0:
+                        question = "";
+                        break;
+                    case 1:
+                        question = "";
+                        break;
+                    case 2:
+                        question = "";
+                        break;
+                    case 3:
+                        question = "";
+                        break;
+                    case 4:
+                        question = "";
+                        break;
+                    case 5:
+                        question = "";
+                        break;
+                    case 6:
+                        question = "";
+                        break;
+                    case 7:
+                        question = "";
+                        break;
+                    case 8:
+                        question = "";
+                        break;
+                    case 9:
+                        question = "";
+                        break;
+                    case 10:
+                        question = "";
+                        break;
+                    case 11:
+                        question = "";
+                        break;
+                    case 12:
+                        question = "";
+                        break;
+                    case 13:
+                        question = "";
+                        break;
+                    case 14:
+                        question = "";
+                        break;
+                    case 15:
+                        question = "";
+                        break;
+                    case 16:
+                        question = "";
+                        break;
+                    case 17:
+                        question = "";
+                        break;
+                    case 18:
+                        question = "";
+                        break;
+                    case 19:
+                        question = "";
+                        break;
+                }
+
+            Console.WriteLine(question);
+        }
+
+        string SetAnswer(int questionNumber, QuestionType questionType)
+        {
+            var answer = "";
+
+            if (questionType == QuestionType.Theory)
+                switch (questionNumber)
+                {
+                    case 0:
+                        answer = "Isomeria de Cadeia/Cadeia";
+                        break;
+                    case 1:
+                        answer = "Isomeria de Posição/Posição";
+                        break;
+                    case 2:
+                        answer = "Isomeria de Compensação/Compensação/Metameria";
+                        break;
+                    case 3:
+                        answer = "Isomeria de Função/Função";
+                        break;
+                    case 4:
+                        answer = "Tautomeria";
+                        break;
+                    case 5:
+                        answer = "Isomeria Geométrica/Geométrica";
+                        break;
+                    case 6:
+                        answer = "Isomeria Óptica/Óptica";
+                        break;
+                }
+
+            return answer;
+        }
+
+        internal enum QuestionType
+        {
+            Theory,
+            Exercise,
+            Both
         }
     }
 }
