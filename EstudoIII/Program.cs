@@ -20,15 +20,15 @@ namespace EstudoIII
 
             Console.Title = "Estudo do Terceiro Trimestre";
 
-            Loop.MainLoop();
+            FlowControl.MainFlow();
         }
     }
 
-    internal static class Loop
+    internal static class FlowControl
     {
         static bool initial = true;
 
-        internal static void MainLoop()
+        internal static void MainFlow()
         {
             if (initial)
                 initial = false;
@@ -38,9 +38,17 @@ namespace EstudoIII
             Console.WriteLine("Digite:\n\tq-reconhecimento: Reconhecimento de funções orgânicas\n" +
                 "\tq-nomenclatura: Nomenclatura de Funções Orgânicas\n" +
                 "\tq-reações: Reações Orgânicas\n" +
-                "\tq-isomeria: Isomeria (pois é)");
+                "\tq-isomeria: Isomeria (pois é)\n" +
+                "Obs: Escreva \"$\" antes da matéria para entrar no modo prova.");
 
             var ex = Console.ReadLine();
+            var examMode = false;
+
+            if (ex[0] == '$')
+            {
+                examMode = true;
+                ex.Replace("$", "");
+            }
 
             switch (ex)
             {
@@ -54,9 +62,10 @@ namespace EstudoIII
                     new ChemistryReactions();
                     break;
                 case "q-isomeria":
-                    new ChemistryIsomery();
+                    new ChemistryIsomery(examMode);
                     break;
                 default:
+                    MainFlow();
                     break;
             }
         }
@@ -338,7 +347,7 @@ namespace EstudoIII
 
             input = Console.ReadLine();
 
-            if (input == "voltar") Loop.MainLoop();
+            if (input == "voltar") FlowControl.MainFlow();
 
             if (input == answer)
                 Console.WriteLine("Acertou!\n\n");
@@ -1065,7 +1074,7 @@ namespace EstudoIII
             SetQuestion(randFunction, randExercise, randType);
             input = Console.ReadLine();
 
-            if (input == "voltar") Loop.MainLoop();
+            if (input == "voltar") FlowControl.MainFlow();
 
             if (input == answer)
                 Console.WriteLine("Acertou!\n\n");
@@ -1320,7 +1329,7 @@ namespace EstudoIII
             SetQuestion(questionNumber);
             input = Console.ReadLine();
 
-            if (input == "voltar") Loop.MainLoop();
+            if (input == "voltar") FlowControl.MainFlow();
 
             if (answer.Contains('/'))
             {
@@ -1348,7 +1357,7 @@ namespace EstudoIII
                     Console.WriteLine("Errou... A resposta certa é \"" + answer + "\"\n\n");
             }
 
-            WorkflowLabel:
+        WorkflowLabel:
             Workflow();
         }
 
@@ -1372,18 +1381,66 @@ namespace EstudoIII
 
     internal class ChemistryIsomery
     {
-        internal ChemistryIsomery()
+        internal ChemistryIsomery(bool examMode)
         {
-            Console.WriteLine("Escreva:\n\t1 - Questões Teóricas\n\t2 - Questões Práticas\n\t3 - Ambas");
-            QuestionType questionType = (QuestionType)(Convert.ToInt32(Console.ReadLine()) - 1);
+            if (examMode)
+            {
+                int rightAnswersNumber = 0;
 
-            if (questionType == QuestionType.Both || questionType == QuestionType.Exercise)
-                Console.WriteLine("\nSe dois compostos não forem isomeros, abrevie com NSI.\n");
+                int i = 0;
+                while (true)
+                {
+                    var returnValue = Workflow(QuestionType.Theory, i);
 
-            Workflow(questionType);
+                    if (returnValue == -1)
+                        break;
+                    else if (returnValue == 1)
+                        rightAnswersNumber++;
+                }
+
+                i = 0;
+                while (true)
+                {
+                    var returnValue = Workflow(QuestionType.Exercise, i);
+
+                    if (returnValue == -1)
+                        break;
+                    else if (returnValue == 1)
+                        rightAnswersNumber++;
+                }
+
+                if (rightAnswersNumber < 28)
+                {
+                    Console.WriteLine("Você acertou menos da metade, estude mais.");
+                }
+                else if (rightAnswersNumber < 38)
+                {
+                    Console.WriteLine("Você acertou acima de 60%, estaria com um CSA.");
+                }
+                else if(rightAnswersNumber < 43)
+                {
+                    Console.WriteLine("Você acertou quase todas! CSA+");
+                }
+                else
+                {
+                    Console.WriteLine("Você gabritou! CSA+++");
+                }
+
+                FlowControl.MainFlow();
+            }
+            else
+            {
+                Console.WriteLine("Escreva:\n\t1 - Questões Teóricas\n\t2 - Questões Práticas\n\t3 - Ambas");
+                QuestionType questionType = (QuestionType)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                if (questionType == QuestionType.Both || questionType == QuestionType.Exercise)
+                    Console.WriteLine("\nSe dois compostos não forem isomeros, abrevie com NSI.\n");
+
+                Workflow(questionType);
+            }
         }
 
-        void Workflow(QuestionType questionType)
+        short Workflow(QuestionType questionType, int? questionNumberExamMode = null)
         {
             Random rd = new Random();
 
@@ -1393,10 +1450,13 @@ namespace EstudoIII
 
             var questionNumber = ((unambiguousType.HasValue && unambiguousType == QuestionType.Theory) || questionType == QuestionType.Theory) ? rd.Next(0, 10) : rd.Next(0, 18);
 
-            SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+            var error = SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+            if (error)
+                return -1;
+
             var answer = SetAnswer(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
 
-            InputLabel:
+        InputLabel:
             var input = Console.ReadLine();
 
             if (input.ToLower().Contains("ótica"))
@@ -1406,7 +1466,7 @@ namespace EstudoIII
             }
 
             if (input == "voltar")
-                Loop.MainLoop();
+                FlowControl.MainFlow();
 
             bool rightAnswer = false;
 
@@ -1424,29 +1484,40 @@ namespace EstudoIII
                 }
             }
             else
-            {
                 if (input.ToLower() == answer.ToLower())
-                    rightAnswer = true;
-            }
+                rightAnswer = true;
 
-            if (rightAnswer)
-                Console.WriteLine("Acertou!");
+            if (questionNumberExamMode.HasValue)
+            {
+                if (rightAnswer)
+                    return 1;
+                else
+                    return 0;
+            }
             else
-                Console.WriteLine("Errou... A resposta certa é " + answer);
+            {
+                if (rightAnswer)
+                    Console.WriteLine("Acertou!");
+                else
+                    Console.WriteLine("Errou... A resposta certa é " + answer);
+            }
 
             Console.WriteLine("\n");
 
-            Workflow(questionType);
+            if (!questionNumberExamMode.HasValue)
+                Workflow(questionType);
+
+            return -1;
         }
 
-        void SetQuestion(int questionNumber, QuestionType questionType)
+        bool SetQuestion(int questionNumber, QuestionType questionType)
         {
             string question = "";
 
             if (questionType == QuestionType.Both)
             {
                 Console.WriteLine("Oops... Bug");
-                Loop.MainLoop();
+                FlowControl.MainFlow();
             }
 
             if (questionType == QuestionType.Theory)
@@ -1491,7 +1562,7 @@ namespace EstudoIII
                         break;
                     case 1:
                         question = "C - C - C = O    e    C - C - C = O\n­­­­­" +
-                                   "                        |\n" + 
+                                   "                        |\n" +
                                    "                        C";
                         break;
                     case 2:
@@ -1671,7 +1742,11 @@ namespace EstudoIII
 
                 }
 
+            if (question == "")
+                return true;
+
             Console.WriteLine(question);
+            return false;
         }
 
         string SetAnswer(int questionNumber, QuestionType questionType)
