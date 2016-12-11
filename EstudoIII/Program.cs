@@ -47,19 +47,23 @@ namespace EstudoIII
             if (ex[0] == '$')
             {
                 examMode = true;
-                ex.Replace("$", "");
+                ex = ex.Replace("$", "");
             }
 
             switch (ex)
             {
                 case "q-reconhecimento":
+                    if (examMode)
+                        Console.WriteLine("Não existe modo prova para esta matéria.");
                     new ChemistryUnderstandment();
                     break;
                 case "q-nomenclatura":
+                    if (examMode)
+                        Console.WriteLine("Não existe modo prova para esta matéria.");
                     new ChemistryNames();
                     break;
                 case "q-reações":
-                    new ChemistryReactions();
+                    new ChemistryReactions(examMode);
                     break;
                 case "q-isomeria":
                     new ChemistryIsomery(examMode);
@@ -1097,12 +1101,133 @@ namespace EstudoIII
 
     internal class ChemistryReactions
     {
-        internal ChemistryReactions()
+        internal ChemistryReactions(bool examMode = false)
         {
-            Init();
+            if (examMode)
+            {
+
+                Console.WriteLine("Acentos e espaços são válidos, todas as respostas estão no singular e correspondem ao polígrafo de reações.\n\n");
+                /*
+                @"                                          ";
+                @"                               NO2        ";
+                @"      __                        \__       ";
+                @"CH3__/  \   +   3X   --->   CH3_/  \_NO2  ";
+                @"     \__/                       \__/      ";
+                @"                                /         ";
+                @"                               NO2        ";
+                */
+
+                int rightAnswersNumber = 0;
+
+                int i = 0;
+                while (true)
+                {
+                    var returnValue = Workflow(i);
+
+                    if (returnValue == -1)
+                        break;
+                    else if (returnValue == 1)
+                        rightAnswersNumber++;
+
+                    Console.WriteLine();
+
+                    i++;
+                }
+
+                i = 0;
+                while (true)
+                {
+                    var returnValue = Workflow(i);
+
+                    if (returnValue == -1)
+                        break;
+                    else if (returnValue == 1)
+                        rightAnswersNumber++;
+
+                    Console.WriteLine();
+
+                    i++;
+                }
+
+                if (rightAnswersNumber < 18)
+                    Console.WriteLine("Você acertou menos da metade, estude mais.");
+                else if (rightAnswersNumber < 25)
+                    Console.WriteLine("Você acertou acima de 60%, estaria com um CSA.");
+                else if (rightAnswersNumber < 30)
+                    Console.WriteLine("Você acertou quase todas! CSA+");
+                else
+                    Console.WriteLine("Você gabritou! CSA+++");
+
+                Console.WriteLine(rightAnswersNumber + "/31");
+            }
+        }
+        
+        short Workflow(int? questionNumberExamMode = null)
+        {
+            Random rd = new Random();
+
+            int questionNumber = (questionNumberExamMode.HasValue) ? questionNumberExamMode.Value : rd.Next(1, 32);
+
+            if (questionNumber > 31)
+                return -1;
+
+            string answer = "";
+            List<string> possibleAnswers = null;
+
+            string input = "";
+
+            answer = SetAnswer(questionNumber);
+
+            var error = SetQuestion(questionNumber);
+            if (error)
+                return -1;
+
+            input = Console.ReadLine();
+
+            if (input == "voltar") FlowControl.MainFlow();
+
+            if (answer.Contains('/'))
+            {
+                possibleAnswers = new List<string>(answer.Split('/'));
+            }
+
+            var rightAnswer = false;
+            if (possibleAnswers != null)
+            {
+                foreach (string s in possibleAnswers)
+                {
+                    if (input.ToLower() == s.ToLower())
+                    {
+                        rightAnswer = true;
+                        break;
+                    }
+                }
+            }
+            else
+                if (input.ToLower() == answer.ToLower()) rightAnswer = true;
+
+            if (questionNumberExamMode.HasValue)
+            {
+                if (rightAnswer)
+                    return 1;
+                else
+                    return 0;
+            }
+            else
+            {
+                if (rightAnswer)
+                    Console.WriteLine("Acertou!");
+                else
+                    Console.WriteLine("Errou... A resposta certa é " + answer);
+            }
+
+            if (!questionNumberExamMode.HasValue)
+                Workflow();
+
+            return -1;
         }
 
-        void SetQuestion(int questionNumber)
+        bool SetQuestion(int questionNumber)
         {
             string question = "";
 
@@ -1193,7 +1318,7 @@ namespace EstudoIII
                     question = "Tipo de reação caracterizada pelos reagentes \"matéria orgânica + O2\" e pelo produto \"CO2 + H2O\".";
                     break;
                 case 28:
-                    question = "Tipo de reação contrária à oxidação (que ocorre com o hidrogênio).";
+                    question = "Tipo de reação em que um composto perde oxigênio para entrada de hidrogênio (contrário de oxidação).";
                     break;
                 case 29:
                     question = "Tipo de reação onde um Álcool e um Ácido Carboxílico produzem Éster";
@@ -1202,12 +1327,13 @@ namespace EstudoIII
                     question = "Tipo de reação que se caracteriza por ser contrária à esterificação.";
                     break;
                 default:
-                    Console.WriteLine("Oops... Bug");
-                    Workflow();
+                    return true;
                     break;
             }
 
             Console.WriteLine(question);
+
+            return false;
         }
 
         string SetAnswer(int questionNumber)
@@ -1313,70 +1439,6 @@ namespace EstudoIII
 
             return answer;
         }
-
-        void Workflow()
-        {
-            Random rd = new Random();
-
-            int questionNumber = rd.Next(1, 32);
-
-            string answer = "";
-            List<string> possibleAnswers = null;
-
-            string input = "";
-
-            answer = SetAnswer(questionNumber);
-            SetQuestion(questionNumber);
-            input = Console.ReadLine();
-
-            if (input == "voltar") FlowControl.MainFlow();
-
-            if (answer.Contains('/'))
-            {
-                possibleAnswers = new List<string>(answer.Split('/'));
-            }
-
-            if (possibleAnswers != null)
-            {
-                foreach (string s in possibleAnswers)
-                {
-                    if (input.ToLower() == s.ToLower())
-                    {
-                        Console.WriteLine("Acertou!\n\n");
-                        goto WorkflowLabel;
-                    }
-                }
-
-                Console.WriteLine("Errou... A resposta certa é \"" + answer + "\"\n\n");
-            }
-            else
-            {
-                if (input.ToLower() == answer.ToLower())
-                    Console.WriteLine("Acertou!\n\n");
-                else
-                    Console.WriteLine("Errou... A resposta certa é \"" + answer + "\"\n\n");
-            }
-
-        WorkflowLabel:
-            Workflow();
-        }
-
-        void Init()
-        {
-            Console.WriteLine("Acentos e espaços são válidos, todas as respostas estão no singular e correspondem ao polígrafo de reações.\n\n");
-
-            /*
-            @"                                          ";
-            @"                               NO2        ";
-            @"      __                        \__       ";
-            @"CH3__/  \   +   3X   --->   CH3_/  \_NO2  ";
-            @"     \__/                       \__/      ";
-            @"                                /         ";
-            @"                               NO2        ";
-            */
-
-            Workflow();
-        }
     }
 
     internal class ChemistryIsomery
@@ -1396,6 +1458,10 @@ namespace EstudoIII
                         break;
                     else if (returnValue == 1)
                         rightAnswersNumber++;
+
+                    Console.WriteLine();
+
+                    i++;
                 }
 
                 i = 0;
@@ -1407,24 +1473,22 @@ namespace EstudoIII
                         break;
                     else if (returnValue == 1)
                         rightAnswersNumber++;
+
+                    Console.WriteLine();
+
+                    i++;
                 }
 
                 if (rightAnswersNumber < 28)
-                {
                     Console.WriteLine("Você acertou menos da metade, estude mais.");
-                }
                 else if (rightAnswersNumber < 38)
-                {
                     Console.WriteLine("Você acertou acima de 60%, estaria com um CSA.");
-                }
-                else if(rightAnswersNumber < 43)
-                {
+                else if (rightAnswersNumber < 43)
                     Console.WriteLine("Você acertou quase todas! CSA+");
-                }
                 else
-                {
                     Console.WriteLine("Você gabritou! CSA+++");
-                }
+
+                Console.WriteLine(rightAnswersNumber + "/43");
 
                 FlowControl.MainFlow();
             }
@@ -1450,13 +1514,13 @@ namespace EstudoIII
 
             var questionNumber = ((unambiguousType.HasValue && unambiguousType == QuestionType.Theory) || questionType == QuestionType.Theory) ? rd.Next(0, 10) : rd.Next(0, 18);
 
-            var error = SetQuestion(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+            var error = SetQuestion((questionNumberExamMode != null) ? questionNumberExamMode.Value : questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
             if (error)
                 return -1;
 
-            var answer = SetAnswer(questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
+            var answer = SetAnswer((questionNumberExamMode != null) ? questionNumberExamMode.Value : questionNumber, (unambiguousType.HasValue) ? unambiguousType.Value : questionType);
 
-        InputLabel:
+            InputLabel:
             var input = Console.ReadLine();
 
             if (input.ToLower().Contains("ótica"))
@@ -1643,7 +1707,7 @@ namespace EstudoIII
                         question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
                                    "    H2\n" +
                                    "    C   CH3\n" +
-                                   "   / \\\n" +
+                                   "   / \\ /\n" +
                                    "H2C - C - CH3\n" +
                                    "      |\n" +
                                    "      H";
@@ -1651,7 +1715,7 @@ namespace EstudoIII
                     case 20:
                         question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
                                    "         H\n" +
-                                   "         |" +
+                                   "         |\n" +
                                    "   H2C - C - CH3\n" +
                                    "     |   |\n" +
                                    "Br - C - C\n" +
@@ -1680,7 +1744,7 @@ namespace EstudoIII
                         question = "O seguinte composto apresenta Isomeria Geométrica?\n" +
                                    "   H2\n" +
                                    "   C\n" +
-                                   "  / \\n" +
+                                   "  / \\\n" +
                                    "HC - CH\n" +
                                    " |   |\n" +
                                    " CH3 CH3";
@@ -1709,16 +1773,16 @@ namespace EstudoIII
                         break;
                     case 29:
                         question = "O seguinte composto apresenta Isomeria Óptica?\n" +
-                                   "      H" +
-                                   "      |" +
+                                   "      H\n" +
+                                   "      |\n" +
                                    "H3C - C - CH2 - CH3\n" +
                                    "      |\n" +
                                    "      CH3";
                         break;
                     case 30:
                         question = "O seguinte composto apresenta Isomeria Óptica?\n" +
-                                   "            H" +
-                                   "            |" +
+                                   "            H\n" +
+                                   "            |\n" +
                                    "H3C - CH3 - C - CH2 - CH3\n" +
                                    "            |\n" +
                                    "            CH3";
